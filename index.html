@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab Express Reynosa | Laboratorio clínico, toma a domicilio y a empresas (propuesta)</title>
+<meta name="description" content="Laboratorio clínico en Blvd. Morelos 1928, Reynosa. Estudios con resultados en línea, toma de muestras a domicilio y a empresas. Lunes a viernes desde las 6:00 am.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,300&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* Idea: un diario de salud sobrio; la portada responde lo que el paciente busca: ¿abren?, ¿cuánto tarda?, ¿vienen a mi casa? */
+:root{
+  --canvas:#FEF9EF; --panel:#F5EEE1; --line:#D1C9BF; --ink:#2A2B2F; --text:#333333; --muted:#515151;
+  --blue:#1C4A96; --blue-dark:#14366F; --blue-soft:#E4EAF5; --open:#1E6B3F; --r:12px;
+  --display:"Newsreader",Georgia,serif; --body:"Inter",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--canvas);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;letter-spacing:-.01em}
+img{max-width:100%;display:block}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid #6E93D6;outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0;color:var(--ink);text-wrap:balance;letter-spacing:-.01em}
+h1 em,h2 em{font-weight:300;font-style:italic;color:var(--blue)}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:16px;padding-right:16px}
+
+.proposal{background:var(--ink);color:#fff;font-size:14px}
+.proposal .wrap{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+.proposal button{background:#fff;color:var(--ink);border:0;border-radius:999px;padding:6px 14px;font:inherit;font-weight:600;cursor:pointer}
+
+header.top{position:sticky;top:0;z-index:20;background:var(--canvas);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:72px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex:none}
+.brand img{width:44px;height:44px}
+.brand b{font-family:var(--display);font-size:22px;font-weight:400;line-height:1}
+.brand small{display:block;font-family:var(--body);font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:3px}
+nav.main{display:flex;gap:2px;margin-left:auto}
+nav.main a{color:var(--text);text-decoration:none;font-size:15px;padding:8px 10px;border-radius:999px}
+nav.main a:hover{background:var(--panel)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 22px;border-radius:999px;font:inherit;font-weight:600;font-size:16px;text-decoration:none;border:1px solid transparent;cursor:pointer;line-height:1.2;text-align:center}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-dark)}
+.btn-line{border-color:var(--ink);color:var(--ink);background:transparent}
+.btn-line:hover{background:var(--ink);color:#fff}
+.top .btn{min-height:42px;padding:8px 16px;font-size:15px}
+
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;padding-top:64px;padding-bottom:64px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.hero h1{font-size:clamp(44px,6.4vw,82px);margin:12px 0 18px}
+.hero .lead{font-size:20px;font-weight:300;color:var(--muted);max-width:32em}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.card-now{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px;display:grid;gap:16px}
+.status{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:16px;color:var(--ink)}
+.status i{width:10px;height:10px;border-radius:50%;background:#8A8A8A;flex:none}
+.status.is-open i{background:#2E9B5B}
+.card-now dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:16px}
+.card-now dt{font-weight:600;color:var(--ink)}
+.card-now dd{margin:0;color:var(--muted)}
+.card-now .btn{width:100%}
+
+section.block{padding:80px 0}
+section.alt{background:var(--panel)}
+.sec-head{display:grid;gap:12px;margin-bottom:32px;max-width:720px}
+.sec-head h2{font-size:clamp(36px,4.6vw,56px)}
+.sec-head p{color:var(--muted);font-size:18px;font-weight:300}
+
+/* Buscador de estudios */
+.finder{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px}
+.finder label{display:block;font-weight:600;margin-bottom:8px;color:var(--ink)}
+.finder input{width:100%;font:inherit;font-size:17px;padding:12px 16px;border:1px solid #808988;border-radius:999px;background:var(--canvas);color:var(--ink)}
+.studies{list-style:none;margin:16px 0 0;padding:0;display:grid}
+.studies li{display:grid;grid-template-columns:70px 1fr auto;gap:14px;align-items:baseline;padding:12px 4px;border-top:1px solid var(--line)}
+.studies code{font-family:var(--body);font-size:13px;color:var(--muted)}
+.studies b{font-weight:400;color:var(--ink)}
+.studies span{font-size:15px;color:var(--blue-dark);font-weight:600;white-space:nowrap}
+.finder .note{margin-top:14px;font-size:15px;color:var(--muted)}
+
+/* Servicios */
+.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.svc article{background:var(--canvas);border:1px solid var(--line);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:12px}
+.svc h3{font-size:32px}
+.svc p{color:var(--muted)}
+.svc ol{margin:0;padding-left:20px;color:var(--muted);display:grid;gap:6px;font-size:16px}
+.svc .btn{margin-top:auto;align-self:flex-start}
+
+/* Calidad */
+.quality{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.quality blockquote{margin:0;font-family:var(--display);font-size:clamp(26px,3vw,36px);line-height:1.2;color:var(--ink)}
+.quality blockquote em{font-style:italic;font-weight:300;color:var(--blue)}
+.quality p{color:var(--muted);margin-top:16px}
+.logos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.logos div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;place-items:center;aspect-ratio:1/1}
+.logos img{max-height:96px;width:auto;max-width:100%;height:auto}
+.logos figcaption{grid-column:1/-1;font-size:14px;color:var(--muted)}
+
+/* Preguntas */
+.faq{display:grid;gap:10px;max-width:860px}
+.faq details{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 20px}
+.faq summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.faq details p{margin-top:10px;color:var(--muted)}
+
+/* Contacto */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.contact dl{margin:0;display:grid;gap:14px}
+.contact dt{font-size:14px;color:var(--muted)}
+.contact dd{margin:0;font-size:19px;color:var(--ink);overflow-wrap:anywhere}
+.contact dd a{font-weight:600}
+form.qf{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;gap:14px}
+.qf h3{font-size:30px}
+.qf label{display:block;font-weight:600;font-size:15px;margin-bottom:6px;color:var(--ink)}
+.qf input,.qf select,.qf textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid #808988;border-radius:10px;background:var(--canvas);color:var(--ink)}
+.qf .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.qf .note{font-size:14px;color:var(--muted)}
+.qf .err{color:#A3261A;font-size:14px}
+
+footer{background:var(--ink);color:#D8D3CA;padding:36px 0;font-size:15px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+footer a{color:#fff}
+
+dialog{border:0;padding:0;border-radius:20px;width:min(600px,calc(100vw - 32px));max-height:calc(100vh - 32px);background:var(--canvas);color:var(--ink)}
+dialog::backdrop{background:rgba(42,43,47,.6)}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--canvas)}
+.dh h2{font-size:30px}
+.x{background:none;border:0;font-size:28px;line-height:1;cursor:pointer;width:44px;height:44px;color:var(--ink)}
+.db{padding:16px 20px 22px}
+.db ol{margin:0;padding-left:20px;display:grid;gap:12px}
+.db b{display:block;color:var(--ink)}
+.db span{color:var(--muted);font-size:15px}
+
+@media (max-width:1020px){
+  nav.main{display:none}
+  .top .btn-line{margin-left:auto}
+  .svc{grid-template-columns:1fr}
+}
+@media (max-width:820px){
+  .hero .wrap,.quality,.contact{grid-template-columns:minmax(0,1fr)}
+  .hero .wrap{padding-top:36px;padding-bottom:48px;gap:32px}
+  section.block{padding:56px 0}
+}
+@media (max-width:420px){
+  .top .btn-line{display:none}
+  .top .btn-blue{margin-left:auto}
+}
+@media (max-width:540px){
+  .brand small{display:none}
+  .brand b{font-size:19px}
+  .top .wrap{gap:10px}
+  .top .btn-line{padding:8px 12px}
+  .top .btn-line .lbl{display:none}
+  .logos div{padding:10px}
+  .studies li{grid-template-columns:1fr auto}
+  .studies code{display:none}
+  .qf .row{grid-template-columns:1fr}
+  form.qf,.finder,.card-now{padding:18px}
+  .ctas .btn{width:100%}
+}
+</style>
+<style id="refero-theme">
+/* fonts: family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,300&family=Inter:wght@300;400;600 */
+/* Estilo Refero: Function, "warm apothecary journal on parchment". Lienzo pergamino (nunca blanco puro), titulares serif con palabra en itálica ligera, cuerpo grotesco con tracking cerrado, bordes taupe sin sombras. El sello terracota se cambia por el azul del escudo de Lab Express. */
+:root{
+  --canvas:#FEF9EF; --panel:#F5EEE1; --line:#D1C9BF; --ink:#2A2B2F; --text:#333333; --muted:#515151;
+  --blue:#1C4A96; --blue-dark:#14366F; --r:12px;
+  --display:"Newsreader",Georgia,serif; --body:"Inter",system-ui,sans-serif;
+}
+body{letter-spacing:-.023em}
+.btn-blue{background:linear-gradient(116deg,#1C4A96,#2F5FAE);color:#fff}
+.btn-blue:hover{background:var(--blue-dark)}
+.eyebrow{letter-spacing:.1em}
+.card-now,.svc article,.finder,form.qf,.faq details,.logos div{box-shadow:none}
+.studies b{font-family:var(--display);font-size:19px}
+</style>
+</head>
+<body>
+
+<div class="proposal" role="note">
+  <div class="wrap">
+    <span>Vista previa de rediseño propuesta para Lab Express Reynosa. No es el sitio oficial.</span>
+    <button type="button" id="openChanges">Ver qué mejoramos</button>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio">
+      <img src="https://labexpressreynosa.com/wp-content/uploads/2022/05/LOGO-LABORATORIO-EXPRESS-4-2018-03-pkio87l17hk1rp50afoqbq2dx2q9o99kpjtg62zkxa-150x150.png" alt="" width="44" height="44">
+      <span><b>Lab Express</b><small>Laboratorio clínico · Reynosa</small></span>
+    </a>
+    <nav class="main" aria-label="Principal">
+      <a href="#estudios">Estudios</a>
+      <a href="#servicios">A domicilio y empresas</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <a class="btn btn-line" href="https://resultados.labexpressreynosa.com" target="_blank" rel="noopener"><span class="lbl">Ver mis</span> resultados</a>
+    <a class="btn btn-blue" href="tel:+528992940980" aria-label="Llamar al 899 294 0980">Llamar</a>
+  </div>
+</header>
+
+<main id="inicio">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Laboratorio Express · desde 2001</p>
+      <h1>Resultados confiables, <em>a tiempo.</em></h1>
+      <p class="lead">Estudios clínicos con tecnología de punta y reactivos de la más alta calidad. Consulta tus resultados en línea o pide que vayamos por tu muestra.</p>
+      <div class="ctas">
+        <a class="btn btn-blue" href="#estudios">Buscar mi estudio</a>
+        <a class="btn btn-line" href="#servicios">Toma a domicilio</a>
+        <a class="btn btn-line" href="https://resultados.labexpressreynosa.com" target="_blank" rel="noopener">Ver mis resultados</a>
+      </div>
+    </div>
+    <aside class="card-now" aria-label="Horario y ubicación">
+      <span class="status" id="status" aria-live="polite"><i aria-hidden="true"></i><span id="statusText">Horario</span></span>
+      <dl>
+        <dt>Lun a vie</dt><dd>6:00 a 19:00</dd>
+        <dt>Sábado</dt><dd>7:00 a 15:00</dd>
+        <dt>Dirección</dt><dd>Blvd. José María Morelos y Pavón 1928, Ampliación Rodríguez</dd>
+      </dl>
+      <a class="btn btn-blue" href="tel:+528992940980">Llamar al 899 294 0980</a>
+      <a class="btn btn-line" href="https://maps.google.com/?q=Blvd.+Jos%C3%A9+Mar%C3%ADa+Morelos+y+Pav%C3%B3n+1928,+Reynosa,+Tamaulipas" target="_blank" rel="noopener">Cómo llegar</a>
+    </aside>
+  </div>
+</section>
+
+<section class="block alt" id="estudios">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>¿Cuánto tarda <em>mi estudio?</em></h2>
+      <p>Escribe el nombre o la clave del estudio y te decimos en cuánto tiempo está listo tu resultado.</p>
+    </div>
+    <div class="finder">
+      <label for="q">Buscar estudio</label>
+      <input id="q" type="search" placeholder="Ej. plomo, hemoglobina, amilasa" autocomplete="off">
+      <ul class="studies" id="studies"></ul>
+      <p class="note" id="none" hidden>No lo encontramos en esta lista. Llámanos y te decimos el tiempo de entrega de tu estudio.</p>
+      <p class="note">Algunos estudios requieren orden médica. Los marcados con ** se procesan en laboratorio de referencia.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="servicios">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Vamos a donde <em>nos necesites</em></h2>
+      <p>En sucursal, en tu casa o en tu empresa.</p>
+    </div>
+    <div class="svc">
+      <article>
+        <h3>En sucursal</h3>
+        <p>Cientos de estudios clínicos. Te orientamos sobre el uso de cada examen antes de cobrarte y revisamos que tu orden esté completa.</p>
+        <a class="btn btn-line" href="#estudios">Ver estudios</a>
+      </article>
+      <article>
+        <h3>Toma a domicilio</h3>
+        <p>Si salir de casa es complicado para ti o tu familiar, vamos por la muestra.</p>
+        <ol>
+          <li>Llámanos y agenda: fecha, hora, paciente, médico y estudios.</li>
+          <li>Paga con tarjeta en tu domicilio.</li>
+          <li>Un tomador de muestras especializado llega a tu casa.</li>
+        </ol>
+        <a class="btn btn-blue" href="tel:+528992940980">Agendar por teléfono</a>
+      </article>
+      <article>
+        <h3>Empresas</h3>
+        <p>¿Necesitas análisis clínicos para tu personal? Tomamos las muestras en tu negocio para no detener la operación.</p>
+        <a class="btn btn-line" href="mailto:informes@labexpressreynosa.com?subject=Cotizaci%C3%B3n%20de%20toma%20de%20muestras%20a%20empresa">Pedir cotización</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block alt">
+  <div class="wrap quality">
+    <div>
+      <blockquote>Trabajamos con los lineamientos de la Norma <em>ISO 15189</em> para emitir resultados útiles en la decisión médica.</blockquote>
+      <p>Empresa fundada en Matamoros en 2001, con gestión de riesgos en toda la organización para garantizar la seguridad del paciente.</p>
+    </div>
+    <figure class="logos" style="margin:0">
+      <div><img src="https://labexpressreynosa.com/wp-content/uploads/2022/09/image-15.png" alt="Bio-Rad" loading="lazy" width="96" height="96"></div>
+      <div><img src="https://labexpressreynosa.com/wp-content/uploads/2022/09/image-16.png" alt="RIQAS" loading="lazy" width="96" height="96"></div>
+      <div><img src="https://labexpressreynosa.com/wp-content/uploads/2022/09/image-17.png" alt="PACAL, Programa de Aseguramiento de Calidad" loading="lazy" width="96" height="96"></div>
+      <figcaption>Programas de control de calidad que muestra su sitio actual.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="block" id="preguntas">
+  <div class="wrap">
+    <div class="sec-head"><h2>Preguntas <em>frecuentes</em></h2></div>
+    <div class="faq">
+      <details><summary>¿Necesito receta u orden médica?</summary><p>No necesariamente: puedes pedir los estudios de forma verbal y te orientamos antes de cobrar. Para algunos estudios la orden médica sí es obligatoria.</p></details>
+      <details><summary>¿Ustedes me pueden decir qué estudios hacerme?</summary><p>Te orientamos sobre el uso de cada examen, pero tu médico es el único facultado para indicarte qué estudios necesitas.</p></details>
+      <details><summary>¿Hay algún examen que revise todo?</summary><p>No. Los estudios se hacen por perfiles o grupos de pruebas; por eso conviene recibir antes la orientación de tu médico.</p></details>
+      <details><summary>¿Debo suspender mi tratamiento?</summary><p>Depende del examen o de lo que indique tu médico. Si un estudio lo requiere, nuestro personal te lo dirá antes de tomar la muestra.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="block alt" id="contacto">
+  <div class="wrap contact">
+    <div>
+      <div class="sec-head" style="margin-bottom:20px"><h2>Visítanos</h2></div>
+      <dl>
+        <div><dt>Dirección</dt><dd>Blvd. José María Morelos y Pavón 1928, Ampliación Rodríguez, Reynosa, Tamps.</dd></div>
+        <div><dt>Teléfono</dt><dd><a href="tel:+528992940980">899 294 0980</a></dd></div>
+        <div><dt>Correo</dt><dd><a href="mailto:informes@labexpressreynosa.com">informes@labexpressreynosa.com</a></dd></div>
+        <div><dt>Horario</dt><dd>Lunes a viernes de 6:00 a 19:00 · Sábado de 7:00 a 15:00</dd></div>
+      </dl>
+    </div>
+    <form class="qf" id="qf" novalidate>
+      <h3>Agenda tu toma a domicilio</h3>
+      <div class="row">
+        <div><label for="qName">Nombre del paciente</label><input id="qName" autocomplete="name" required></div>
+        <div><label for="qPhone">Teléfono</label><input id="qPhone" type="tel" autocomplete="tel" required></div>
+      </div>
+      <div class="row">
+        <div><label for="qDay">Día</label><input id="qDay" type="date"></div>
+        <div><label for="qWhere">Dónde</label>
+          <select id="qWhere"><option>En mi domicilio</option><option>En mi empresa</option><option>Iré a sucursal</option></select>
+        </div>
+      </div>
+      <div><label for="qMsg">Estudios que necesitas</label><textarea id="qMsg" rows="3"></textarea></div>
+      <button class="btn btn-blue" type="submit">Enviar solicitud por correo</button>
+      <p class="err" id="qErr" role="alert" hidden>Escribe el nombre del paciente y un teléfono para confirmarte.</p>
+      <p class="note">Se abre tu correo con la solicitud lista para el laboratorio.</p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Lab Express Reynosa · Blvd. Morelos 1928 · <a href="tel:+528992940980">899 294 0980</a></span>
+    <a href="https://resultados.labexpressreynosa.com" target="_blank" rel="noopener">Consultar resultados</a>
+  </div>
+</footer>
+
+<dialog id="changes" aria-labelledby="cT">
+  <div class="dh"><h2 id="cT">Qué mejoramos</h2><button class="x" type="button" data-close aria-label="Cerrar">×</button></div>
+  <div class="db">
+    <ol>
+      <li><b>Portada al día</b><span>Hoy lo primero que se ve es una tabla de pruebas COVID (anticuerpos, antígeno, PCR). Ahora la portada responde lo que busca el paciente: horario, ubicación y tiempos de entrega.</span></li>
+      <li><b>Un solo teléfono</b><span>El sitio actual muestra tres números distintos: 294-0980, 478-1350 y 244-0980. Aquí queda uno, en todas las secciones.</span></li>
+      <li><b>Teléfono que se toca</b><span>En el sitio actual ningún teléfono tiene enlace: desde el celular hay que copiarlo a mano.</span></li>
+      <li><b>Tiempo de entrega por estudio</b><span>Su lista de estudios está en cinco páginas; aquí se busca por nombre o clave y se ve cuántos días tarda.</span></li>
+      <li><b>Toma a domicilio en 3 pasos</b><span>Con formulario que arma la solicitud completa.</span></li>
+      <li><b>Mejor en Google</b><span>El sitio actual no tiene descripción para Google y sus 5 imágenes no tienen texto alternativo.</span></li>
+      <li><b>¿Están abiertos?</b><span>La portada dice en tiempo real si el laboratorio está abierto.</span></li>
+    </ol>
+  </div>
+</dialog>
+
+<script>
+// Estudios tal como aparecen en su página de Estudios (página 1 de 5)
+const STUDIES = [
+  ["E396","Antitrombina III **","8 días hábiles"],
+  ["E397","Proteína C de la coagulación **","11 días hábiles"],
+  ["E294","Amilasa en orina al azar","El mismo día"],
+  ["E90","Plomo","1 día hábil"],
+  ["E380","Ac. Anti-Ag “E” Hepatitis B (HbeAc) **","4 días hábiles"],
+  ["E306","Ac. Anti-Beta 2 glicoproteína IgM **","4 días hábiles"],
+  ["E406","Electroforesis de hemoglobina **","10 días hábiles"],
+  ["E405","PCR tiempo real Babesia microti **","18 días hábiles"],
+  ["E404","Anticuerpos anti-cápside del virus Epstein Barr (VCA) IgG e IgM **","4 días hábiles"],
+  ["E403","Magnesio en orina de 24 horas **","4 días hábiles"]
+];
+const list = document.getElementById("studies"), none = document.getElementById("none");
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+function render(q){
+  const n = norm(q.trim());
+  const rows = STUDIES.filter(s => !n || norm(s[0] + " " + s[1]).includes(n));
+  list.innerHTML = rows.map(s => `<li><code>${s[0]}</code><b>${s[1]}</b><span>${s[2]}</span></li>`).join("");
+  none.hidden = rows.length > 0;
+}
+document.getElementById("q").addEventListener("input", e => render(e.target.value));
+render("");
+
+// Abierto ahora: L-V 6:00-19:00, S 7:00-15:00 (hora de Reynosa)
+(function(){
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Matamoros" }));
+  const d = now.getDay(), m = now.getHours() * 60 + now.getMinutes();
+  const h = d === 0 ? null : d === 6 ? [420, 900] : [360, 1140];
+  const open = !!h && m >= h[0] && m < h[1];
+  const hhmm = x => `${Math.floor(x / 60)}:${String(x % 60).padStart(2, "0")}`;
+  document.getElementById("status").classList.toggle("is-open", open);
+  document.getElementById("statusText").textContent = open ? `Abierto hasta las ${hhmm(h[1])}` : "Cerrado ahora";
+})();
+
+document.getElementById("qf").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = id => document.getElementById(id).value.trim();
+  const err = document.getElementById("qErr");
+  if (!v("qName") || !v("qPhone")) { err.hidden = false; return; }
+  err.hidden = true;
+  const body = [`Paciente: ${v("qName")}`, `Teléfono: ${v("qPhone")}`, `Día: ${v("qDay")}`, `Dónde: ${v("qWhere")}`, `Estudios: ${v("qMsg")}`].join("\n");
+  location.href = `mailto:informes@labexpressreynosa.com?subject=${encodeURIComponent("Toma de muestra: " + v("qWhere"))}&body=${encodeURIComponent(body)}`;
+});
+
+const dlg = document.getElementById("changes");
+document.getElementById("openChanges").addEventListener("click", () => dlg.showModal());
+document.querySelector("[data-close]").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+</script>
+</body>
+</html>
